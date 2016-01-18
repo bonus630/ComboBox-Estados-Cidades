@@ -1,0 +1,69 @@
+<!doctype html>
+<html>
+<head>
+<style>
+	div
+	{
+		display:block;
+		width:120px;
+		height:56px;
+		background-color:#D8D8D8;
+		border-color:#3A1C2A;
+		margin:auto;
+		box-shadow: #000000 2px 2px 8px;
+	}
+	select
+	{
+		float:left;
+		width:100px;
+		margin:10px;
+		height:36px;
+		
+	}
+</style>
+<meta charset="utf-8">
+<title>Demo ComboBox - bonus630</title>
+</head>
+
+<body>
+<div id="corpo">
+	
+    <select name="cb_estado" id="cb_estado">
+      	<option selected id="cb_estado_selecione">Selecione</option>
+    </select>
+        <select name="cb_cidade" id="cb_cidade" style="display:none;">
+    </select>
+</div>
+</body>
+<script src="jquery-2.1.1.min.js"></script>
+<script>
+	$(document).ready(function(e) {
+		$.ajax({"url":"comboboxDataSource.php"}).done(
+		function(data){
+			for(var i =0;i<data.Estados.length;i++)
+			{
+				$('select[name="cb_estado"]').append("<option value=\""+data.Estados[i].id+"\">"+data.Estados[i].nome+"</option>");
+			}
+		});
+    });
+	$('select[name="cb_estado"]').change(
+		function(){
+			var estadoValor = $("select option:selected").val();
+			var cb_cidade = $('select[name="cb_cidade"]');
+			var cb_estado = $(this);
+			$.ajax({"url":"comboboxDataSource.php?id="+estadoValor}).done(
+				function(data){
+					var nCidade = data.Cidades.length;
+					cb_cidade.show(200);
+					cb_cidade.empty();
+					cb_estado.find("option:contains('Selecione')").remove();
+					$("#corpo").width(250);
+					for(var i =0;i<nCidade;i++)
+					{
+						cb_cidade.append("<option value=\""+data.Cidades[i].id+"\">"+data.Cidades[i].nome+"</option>");
+					}
+				}
+			);
+		});
+</script>
+</html>
